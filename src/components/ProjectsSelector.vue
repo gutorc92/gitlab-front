@@ -3,8 +3,6 @@
     q-item-main
       q-field(label='Projetos')
         q-select(v-model="projectsSelected" placeholder="Projetos" v-if="group !== ''" multiple :options="optionsWithout")
-    q-item-side(rigth)
-      q-btn(icon='search')
 </template>
 
 <style>
@@ -53,7 +51,7 @@ export default {
       let aux = this.projectsSelected
       let response = _.filter(this.allProjects, project => _.includes(aux, project.id))
       console.log('project selector', response)
-      this.$emit('input', response)
+      this.$store.commit('projects/updateProjectsSelectedState', response)
     }
   },
   methods: {

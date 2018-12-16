@@ -19,11 +19,6 @@
 import _ from 'lodash'
 export default {
   name: 'Projects',
-  props: {
-    projects: {
-      required: true
-    }
-  },
   data () {
     return {
       projectsData: []
@@ -32,14 +27,14 @@ export default {
   computed: {
     personalToken () {
       return this.$store.getters['credentials/getPersonalToken']
+    },
+    projects () {
+      return this.$store.getters['projects/getPrpkectsSelected']
     }
   },
   created () {
   },
   watch: {
-    token () {
-      this.loadGroups()
-    },
     projects () {
       this.loadProjectData()
     }
@@ -66,7 +61,7 @@ export default {
               'Private-Token': this.personalToken
             }
           }).then(function (response) {
-          projectsData.push({name: project.name, id: project.id, branches: _.filter(response.data, {name: 'dev'})})
+          projectsData.push({name: project.name, id: project.id, branches: _.filter(response.data, function (item) { return _.includes(['dev', 'master'], item.name) })})
         })
       }
     },
