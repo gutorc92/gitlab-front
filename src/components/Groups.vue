@@ -1,7 +1,11 @@
 <template lang="pug">
     div
-      q-field(label="Groups" v-if="groups.length > 0")
-        q-select(v-model="groupSelected" :options="groups")
+      q-item
+        q-item-main
+          q-field(label="Groups" v-if="groups.length > 0")
+      q-item
+        q-item-main
+          q-select(v-model="groupSelected" :options="groups")
 </template>
 
 <style>

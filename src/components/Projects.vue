@@ -2,12 +2,14 @@
     .col-md-6.col-xs-12
       .row
         q-card(v-for='(project, key) in projectsData' :key="key")
-          q-card-title Projeto {{project.name}}
+          q-card-title.bg-grey-6 Projeto {{project.name}}
           q-card-separator
-          q-card-main
+          q-card-main.text-white.text-weight-light.no-padding(:class="cardColor(project.branches)")
             q-item(v-for="(branch, index) in project.branches" :key="index")
-              q-item-side {{branch.name}}
-              q-item-main {{formatDate(branch.commit.created_at)}}
+              q-item-main
+                div {{branch.name}}
+                div {{formatDate(branch.commit.created_at)}}
+          q-card-separator
           q-card-actions
             q-btn(@click="create_merge_request(project.id)") Merge request
 </template>
@@ -47,6 +49,19 @@ export default {
       let year = date.getFullYear()
 
       return day + '/' + monthIndex + '/' + year
+    },
+    cardColor (branches) {
+      if (branches.length === 2) {
+        let firstDate = new Date(branches[0].commit.created_at)
+        let secondDate = new Date(branches[1].commit.created_at)
+        firstDate.setHours(0, 0, 0, 0)
+        secondDate.setHours(0, 0, 0, 0)
+        if (firstDate.getTime() !== secondDate.getTime()) {
+          return 'bg-red-4'
+        }
+      }
+      console.log('passou aqui')
+      return 'bg-green-4'
     },
     loadProjectData () {
       if (this.personalToken === '') {

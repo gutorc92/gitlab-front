@@ -69,7 +69,9 @@ module.exports = function (ctx) {
         'QInput',
         'QSelect',
         'QChipsInput',
-        'QAutocomplete'
+        'QAutocomplete',
+        'QToggle',
+        'QOptionGroup'
       ],
       directives: [
         'Ripple'

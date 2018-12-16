@@ -1,8 +1,15 @@
 <template lang="pug">
-  q-item
-    q-item-main
-      q-field(label='Projetos')
-        q-select(v-model="projectsSelected" placeholder="Projetos" v-if="group !== ''" multiple :options="optionsWithout")
+  q-list
+    q-item
+      q-item-main
+        q-field(label='Projetos')
+    q-item
+      q-option-group(
+        type='toggle'
+        v-model="projectsSelected"
+        :options="optionsWithout"
+      )
+
 </template>
 
 <style>
@@ -55,6 +62,9 @@ export default {
     }
   },
   methods: {
+    projectSelection (project) {
+      console.log('project', project)
+    },
     async loadProjects (page) {
       let scope = this
       if (this.personalToken === '') {

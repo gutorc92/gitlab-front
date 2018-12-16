@@ -1,5 +1,5 @@
 <template lang="pug">
-q-page(class="flex flex-center")
+q-page(class="flex")
     div
       projects(:projects="projectsSelected")
 </template>

@@ -3,9 +3,11 @@
     q-item
       q-item-main
         q-field(label="Chave")
-          q-input(v-model="tokenData" @change="val => tokenData = val")
       q-item-side(rigth)
         q-btn(icon='search', @click='saveToken')
+    q-item
+      q-item-main
+        q-input(v-model="tokenData" type='password' @change="val => tokenData = val")
 </template>
 
 <script>
