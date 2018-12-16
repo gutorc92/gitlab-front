@@ -1,7 +1,10 @@
 <template lang="pug">
-q-page(class="flex")
-    div
-      projects(:projects="projectsSelected")
+  div
+    q-toolbar.no-padding
+        q-toolbar-title(shrink) Projetos
+    q-page(class="flex")
+      div
+        projects(:projects="projectsSelected")
 </template>
 
 <script>

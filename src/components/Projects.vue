@@ -2,7 +2,7 @@
     .col-md-6.col-xs-12
       .row
         q-card(v-for='(project, key) in projectsData' :key="key")
-          q-card-title.bg-grey-6 Projeto {{project.name}}
+          q-card-title.bg-grey-6 {{project.name}}
           q-card-separator
           q-card-main.text-white.text-weight-light.no-padding(:class="cardColor(project.branches)")
             q-item(v-for="(branch, index) in project.branches" :key="index")
