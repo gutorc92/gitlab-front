@@ -1,0 +1,96 @@
+image: docker
+
+stages:
+  - support
+  - test
+  - backup
+  - setup_deploy
+
+variables:
+  REGISTRY: "registry.gitlab.com"
+  IMG: "eduqc/gitlab-front"
+
+before_script:
+  - apk update && apk add py-pip yarn -q
+
+lint:
+  image: $CI_REGISTRY/$IMG:quasar
+  stage: test
+  before_script:
+    - node -v
+    - yarn -v
+    - yarn global add eslint@4.18.2 babel-eslint@8.2.1  eslint-config-standard@11.0.0 eslint-friendly-formatter@3.0.0 eslint-loader@2.0.0 eslint-plugin-html eslint-plugin-import@2.9.0 eslint-plugin-node@6.0.1 eslint-plugin-promise@3.7.0 eslint-plugin-standard@3.0.1 eslint-plugin-vue@4.3.0
+  script:
+    - yarn lint
+  except:
+    - schedules
+    - triggers
+
+deploy_dev:
+  image: docker:latest
+  stage: setup_deploy
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TAG: "latest"
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY
+    - "docker build --target base -t $REGISTRY/$IMG:$DOCKER_TAG ."
+    - "docker push $REGISTRY/$IMG:$DOCKER_TAG"
+  only:
+    - dev
+  except:
+    - schedules
+    - triggers
+
+deploy_prod:
+  image: "docker:stable"
+  stage: setup_deploy
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TAG: "prod"
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY
+    - "docker build -t $REGISTRY/$IMG:$DOCKER_TAG ."
+    - "docker push $REGISTRY/$IMG:$DOCKER_TAG"
+  only:
+    - master
+  except:
+    - schedules
+    - triggers
+
+deploy_rollback:
+  image: "docker:stable"
+  stage: backup
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TAG: "rollback"
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY
+    - docker pull $REGISTRY/$IMG:prod
+    - docker tag $REGISTRY/$IMG:prod $REGISTRY/$IMG:$DOCKER_TAG
+    - docker push $REGISTRY/$IMG:$DOCKER_TAG
+  only:
+    - master
+  except:
+    - schedules
+    - triggers
+
+
+quasar:
+  image: docker:latest
+  stage: support
+  allow_failure: true
+  services:
+    - docker:dind 
+  variables:
+    DOCKER_TAG: "quasar"
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY
+    - docker build --target $DOCKER_TAG -t $REGISTRY/$IMG:$DOCKER_TAG -f DockerfileSupport .
+    - docker push $REGISTRY/$IMG:$DOCKER_TAG
+  only:
+    - schedules
+    - triggers
