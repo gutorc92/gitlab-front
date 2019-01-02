@@ -2,9 +2,9 @@
   div
     q-item
       q-item-main
-        q-field(label="Chave")
+        q-field(label="Chave" icon="help_outline")
       q-item-side(rigth)
-        q-btn(icon='search', @click='saveToken')
+        q-btn(round icon='search', @click='saveToken')
     q-item
       q-item-main
         q-input(v-model="tokenData" type='password' @change="val => tokenData = val")

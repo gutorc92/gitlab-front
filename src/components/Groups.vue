@@ -2,10 +2,10 @@
     div
       q-item
         q-item-main
-          q-field(label="Groupos" v-if="groups.length > 0")
+          q-field(label="Groupos")
       q-item
         q-item-main
-          q-select(v-model="groupSelected" :options="groups")
+          q-select(v-if="groups.length > 0" v-model="groupSelected" :options="groups")
 </template>
 
 <style>
