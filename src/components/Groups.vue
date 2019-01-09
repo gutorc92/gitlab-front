@@ -27,7 +27,6 @@ export default {
     }
   },
   created () {
-    console.log('create group')
     this.groupSelected = this.value
     if (this.personalToken !== '') {
       this.loadGroups()

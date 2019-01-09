@@ -36,7 +36,6 @@ export default {
     }
   },
   created () {
-    console.log('calling')
     this.tokenData = this.value
   },
   watch: {

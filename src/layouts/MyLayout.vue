@@ -31,7 +31,8 @@ export default {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
       groupSelected: '',
-      tokenUser: ''
+      tokenUser: '',
+      projectsSelected: []
     }
   },
   computed: {
@@ -42,7 +43,6 @@ export default {
     }
   },
   created () {
-    console.log('calling')
     if (this.personalToken !== '') {
       this.tokenUser = this.personalToken
     }

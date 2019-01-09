@@ -43,7 +43,6 @@ export default {
     }
   },
   created () {
-    console.log('calling')
     if (this.group !== '') {
       this.loadProjects(1)
     }
@@ -57,7 +56,6 @@ export default {
     projectsSelected () {
       let aux = this.projectsSelected
       let response = _.filter(this.allProjects, project => _.includes(aux, project.id))
-      console.log('project selector', response)
       this.$store.commit('projects/updateProjectsSelectedState', response)
     }
   },

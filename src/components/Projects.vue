@@ -60,7 +60,6 @@ export default {
           return 'bg-red-4'
         }
       }
-      console.log('passou aqui')
       return 'bg-green-4'
     },
     loadProjectData () {
@@ -80,17 +79,28 @@ export default {
         })
       }
     },
-    create_merge_request (id) {
-      this.$axios.post(`https://gitlab.com/api/v4/projects/${id}/merge_requests`, {
-        source_branch: 'dev',
-        target_branch: 'master',
-        title: 'Deploy prod'
-      },
-      {
-        headers: {
-          'Private-Token': this.personalToken
-        }
-      })
+    async create_merge_request (id) {
+      try {
+        let response = await this.$axios.post(`https://gitlab.com/api/v4/projects/${id}/merge_requests`, {
+          source_branch: 'dev',
+          target_branch: 'master',
+          title: 'Deploy prod'
+        },
+        {
+          headers: {
+            'Private-Token': this.personalToken
+          }
+        })
+        console.log('response', response)
+        this.$q.notify({
+          message: 'Merge request criado',
+          type: 'positive'
+        })
+      } catch (err) {
+        this.$q.notify({
+          message: 'Merge não pode ser criado'
+        })
+      }
     }
   }
 }

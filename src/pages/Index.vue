@@ -29,7 +29,6 @@ export default {
     }
   },
   created () {
-    console.log('calling')
     if (this.personalToken !== '') {
       this.tokenUser = this.personalToken
     }
