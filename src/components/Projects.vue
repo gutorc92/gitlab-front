@@ -4,11 +4,10 @@
         q-card(v-for='(project, key) in projectsData' :key="key")
           q-card-title.bg-grey-6 {{project.name}}
           q-card-separator
-          q-card-main.text-white.text-weight-light.no-padding(:class="cardColor(project.branches)")
+          q-card-main.text-white.text-weight-light.no-padding(:class="cardColor2(project.updated)")
             q-item(v-for="(branch, index) in project.branches" :key="index")
               q-item-main
                 div {{branch.name}}
-                div {{formatDate(branch.commit.created_at)}}
           q-card-separator
           q-card-actions
             q-btn(@click="create_merge_request(project.id)") Merge request
@@ -18,7 +17,6 @@
 </style>
 
 <script>
-import _ from 'lodash'
 export default {
   name: 'Projects',
   data () {
@@ -31,14 +29,17 @@ export default {
       return this.$store.getters['credentials/getPersonalToken']
     },
     projects () {
-      return this.$store.getters['projects/getPrpkectsSelected']
+      return this.$store.getters['projects/getProjectsSelected']
     }
   },
   created () {
   },
   watch: {
-    projects () {
-      this.loadProjectData()
+    projects: {
+      handler () {
+        this.loadProjectData()
+      },
+      deep: true
     }
   },
   methods: {
@@ -49,6 +50,9 @@ export default {
       let year = date.getFullYear()
 
       return day + '/' + monthIndex + '/' + year
+    },
+    cardColor2 (updated) {
+      return updated ? 'bg-green-4' : 'bg-red-4'
     },
     cardColor (branches) {
       if (branches.length === 2) {
@@ -62,21 +66,31 @@ export default {
       }
       return 'bg-green-4'
     },
-    loadProjectData () {
+    async loadProjectData () {
       if (this.personalToken === '') {
         return 0
       }
       this.projectsData = []
       let projectsData = this.projectsData
       for (let project of this.projects) {
-        this.$axios.get(`https://gitlab.com/api/v4/projects/${project.id}/repository/branches`,
-          {
+        try {
+          let {data} = await this.$axios.get(`https://gitlab.com/api/v4/projects/${project.id}/repository/compare?from=master&to=dev`, {
             headers: {
               'Private-Token': this.personalToken
             }
-          }).then(function (response) {
-          projectsData.push({name: project.name, id: project.id, branches: _.filter(response.data, function (item) { return _.includes(['dev', 'master'], item.name) })})
-        })
+          })
+          projectsData.push({name: project.name, id: project.id, branches: [{name: 'master'}, {name: 'dev'}], updated: data.commit === null})
+        } catch (err) {
+          console.log(err)
+        }
+        // this.$axios.get(`https://gitlab.com/api/v4/projects/${project.id}/repository/branches`,
+        //   {
+        //     headers: {
+        //       'Private-Token': this.personalToken
+        //     }
+        //   }).then(function (response) {
+        //   projectsData.push({name: project.name, id: project.id, branches: _.filter(response.data, function (item) { return _.includes(['dev', 'master'], item.name) })})
+        // })
       }
     },
     async create_merge_request (id) {

@@ -10,7 +10,6 @@
       token(v-model="tokenUser")
       groups(v-model='groupSelected')
       projects-selector(v-model="projectsSelected", :group="groupSelected")
-      projects(:projects="projectsSelected")
     q-page-container
       router-view
 </template>
