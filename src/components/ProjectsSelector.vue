@@ -4,6 +4,8 @@
       q-item-main
         q-field(label='Projetos')
     q-item
+      q-input(v-model="search" float-label="Busca")
+    q-item
       q-option-group(
         type='toggle'
         v-model="projectsSelected"
@@ -16,6 +18,7 @@
 </style>
 
 <script>
+import fuzzysearch from 'fuzzysearch'
 import _ from 'lodash'
 export default {
   name: 'ProjectsSelector',
@@ -30,6 +33,7 @@ export default {
   },
   data () {
     return {
+      search: '',
       allProjects: [],
       projectsSelected: []
     }
@@ -39,7 +43,12 @@ export default {
       return this.$store.getters['credentials/getPersonalToken']
     },
     optionsWithout () {
-      return _.map(this.allProjects, function (p) { return {value: p.id, label: p.name} })
+      let auxProjects = this.allProjects
+      if (this.search !== '') {
+        let token = this.search
+        auxProjects = _.filter(auxProjects, function (item) { return fuzzysearch(token, item.name) })
+      }
+      return _.map(auxProjects, function (p) { return {value: p.id, label: p.name} })
     }
   },
   created () {
