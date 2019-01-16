@@ -49,7 +49,7 @@ deploy_prod:
   services:
     - docker:dind
   variables:
-    DOCKER_TAG: "prod"
+    DOCKER_TAG: "master"
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY
     - "docker build -t $REGISTRY/$IMG:$DOCKER_TAG ."
@@ -69,8 +69,8 @@ deploy_rollback:
     DOCKER_TAG: "rollback"
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $REGISTRY
-    - docker pull $REGISTRY/$IMG:prod
-    - docker tag $REGISTRY/$IMG:prod $REGISTRY/$IMG:$DOCKER_TAG
+    - docker pull $REGISTRY/$IMG:master
+    - docker tag $REGISTRY/$IMG:master $REGISTRY/$IMG:$DOCKER_TAG
     - docker push $REGISTRY/$IMG:$DOCKER_TAG
   only:
     - master
