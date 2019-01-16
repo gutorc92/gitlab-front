@@ -9,6 +9,13 @@
               q-item-main
                 div {{branch.name}}
           q-card-separator
+          q-card-main
+            q-list.no-padding.row(no-border)
+              q-item.no-padding(v-for="(job, index) in project.jobs" :key="index")
+                q-item-side(:icon="job.status === 'success' ? 'radio_button_checked' : 'error_outline'"
+                            :color="job.status === 'success' ? 'green': 'red'")
+                  q-tooltip| {{job.ref}}
+          q-card-separator
           q-card-actions
             q-btn(@click="create_merge_request(project.id)") Merge request
 </template>
@@ -21,7 +28,8 @@ export default {
   name: 'Projects',
   data () {
     return {
-      projectsData: []
+      projectsData: [],
+      projectsTimer: null
     }
   },
   computed: {
@@ -33,6 +41,12 @@ export default {
     }
   },
   created () {
+  },
+  mounted () {
+    let scope = this
+    this.projectsTimer = setInterval(function () {
+      scope.loadProjectData()
+    }, 1 * 60 * 1000)
   },
   watch: {
     projects: {
@@ -79,19 +93,34 @@ export default {
               'Private-Token': this.personalToken
             }
           })
-          projectsData.push({name: project.name, id: project.id, branches: [{name: 'master'}, {name: 'dev'}], updated: data.commit === null})
+          let jobs = await this.loadJobs(project.id)
+          projectsData.push({
+            name: project.name,
+            id: project.id,
+            branches: [{name: 'master'}, {name: 'dev'}],
+            updated: data.commit === null,
+            jobs: jobs
+          })
         } catch (err) {
           console.log(err)
         }
-        // this.$axios.get(`https://gitlab.com/api/v4/projects/${project.id}/repository/branches`,
-        //   {
-        //     headers: {
-        //       'Private-Token': this.personalToken
-        //     }
-        //   }).then(function (response) {
-        //   projectsData.push({name: project.name, id: project.id, branches: _.filter(response.data, function (item) { return _.includes(['dev', 'master'], item.name) })})
-        // })
       }
+    },
+    async loadJobs (projectId) {
+      let jobs = []
+      try {
+        let {data} = await this.$axios.get(`https://gitlab.com/api/v4/projects/${projectId}/jobs`, {
+          headers: {
+            'Private-Token': this.personalToken
+          }
+        })
+        for (let i = 0; i < 3; i++) {
+          jobs.push(data[i])
+        }
+      } catch (err) {
+        console.log(err)
+      }
+      return jobs
     },
     async create_merge_request (id) {
       try {
@@ -115,6 +144,9 @@ export default {
         })
       }
     }
+  },
+  beforeDestroy () {
+    clearInterval(this.projectsTimer)
   }
 }
 </script>
