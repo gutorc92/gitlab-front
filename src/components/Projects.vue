@@ -95,7 +95,7 @@ export default {
     },
     async create_merge_request (id) {
       try {
-        let response = await this.$axios.post(`https://gitlab.com/api/v4/projects/${id}/merge_requests`, {
+        await this.$axios.post(`https://gitlab.com/api/v4/projects/${id}/merge_requests`, {
           source_branch: 'dev',
           target_branch: 'master',
           title: 'Deploy prod'
@@ -105,7 +105,6 @@ export default {
             'Private-Token': this.personalToken
           }
         })
-        console.log('response', response)
         this.$q.notify({
           message: 'Merge request criado',
           type: 'positive'
