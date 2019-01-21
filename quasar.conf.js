@@ -19,7 +19,7 @@ module.exports = function (ctx) {
     supportIE: false,
     build: {
       scopeHoisting: true,
-      // vueRouterMode: 'history',
+      vueRouterMode: 'history',
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,
@@ -71,7 +71,9 @@ module.exports = function (ctx) {
         'QChipsInput',
         'QAutocomplete',
         'QToggle',
-        'QOptionGroup'
+        'QOptionGroup',
+        'QTooltip',
+        'QScrollArea'
       ],
       directives: [
         'Ripple'

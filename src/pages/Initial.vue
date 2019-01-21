@@ -1,10 +1,9 @@
 <template lang="pug">
   div
-    q-toolbar.no-padding
-        q-toolbar-title(shrink) Projetos
-    q-page(class="flex")
-      div
-        projects(:projects="projectsSelected")
+    q-page.bg-dark
+      q-scroll-area.projectsScroll
+        .row.full-width
+          projects(:projects="projectsSelected")
 </template>
 
 <script>
@@ -25,5 +24,8 @@ export default {
 </script>
 
 <style lang="css">
-
+.projectsScroll{
+  height: calc(100vh - 50px);
+  width: 100%;
+}
 </style>

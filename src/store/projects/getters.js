@@ -4,6 +4,5 @@ export const getProjectsSelected = (state) => {
       state.projectsSelected = window.localStorage.getItem('projectsSelected')
     }
   }
-  console.log('state', state)
   return state.projectsSelected
 }

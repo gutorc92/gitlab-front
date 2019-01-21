@@ -1,16 +1,23 @@
 <template lang="pug">
-    .col-md-6.col-xs-12
-      .row
-        q-card(v-for='(project, key) in projectsData' :key="key")
-          q-card-title.bg-grey-6 {{project.name}}
-          q-card-separator
-          q-card-main.text-white.text-weight-light.no-padding(:class="cardColor2(project.updated)")
-            q-item(v-for="(branch, index) in project.branches" :key="index")
-              q-item-main
-                div {{branch.name}}
-          q-card-separator
-          q-card-actions
-            q-btn(@click="create_merge_request(project.id)") Merge request
+.q-pa-md.row.full-width
+  .col-xl-3.col-md-4.col-xs-12.col-sm-6(v-for='(project, key) in projectsData' :key="key").q-pa-md
+    q-card
+      q-card-title.bg-faded.text-white {{project.name}}
+      q-card-separator.bg-grey
+      q-card-main.bg-white.text-white.text-weight-light.no-padding(:class="cardColor2(project.updated)")
+        q-item(v-for="(branch, index) in project.branches" :key="index")
+          q-item-main
+            div {{branch.name}}
+      q-card-separator.bg-grey
+      q-card-main.bg-white
+        q-list.no-padding.row(no-border)
+          q-item.no-padding(v-for="(job, index) in project.jobs" :key="index")
+            q-item-side(:icon="job.status === 'success' ? 'radio_button_checked' : 'error_outline'"
+                        :color="job.status === 'success' ? 'green': 'red'")
+              q-tooltip| {{job.ref}}
+      q-card-separator.bg-grey
+      q-card-actions.bg-white
+        q-btn.full-width(flat @click="create_merge_request(project.id)") Merge request
 </template>
 
 <style>
@@ -21,7 +28,8 @@ export default {
   name: 'Projects',
   data () {
     return {
-      projectsData: []
+      projectsData: [],
+      projectsTimer: null
     }
   },
   computed: {
@@ -33,6 +41,12 @@ export default {
     }
   },
   created () {
+  },
+  mounted () {
+    let scope = this
+    this.projectsTimer = setInterval(function () {
+      scope.loadProjectData()
+    }, 1 * 60 * 1000)
   },
   watch: {
     projects: {
@@ -79,23 +93,38 @@ export default {
               'Private-Token': this.personalToken
             }
           })
-          projectsData.push({name: project.name, id: project.id, branches: [{name: 'master'}, {name: 'dev'}], updated: data.commit === null})
+          let jobs = await this.loadJobs(project.id)
+          projectsData.push({
+            name: project.name,
+            id: project.id,
+            branches: [{name: 'master'}, {name: 'dev'}],
+            updated: data.commit === null,
+            jobs: jobs
+          })
         } catch (err) {
           console.log(err)
         }
-        // this.$axios.get(`https://gitlab.com/api/v4/projects/${project.id}/repository/branches`,
-        //   {
-        //     headers: {
-        //       'Private-Token': this.personalToken
-        //     }
-        //   }).then(function (response) {
-        //   projectsData.push({name: project.name, id: project.id, branches: _.filter(response.data, function (item) { return _.includes(['dev', 'master'], item.name) })})
-        // })
       }
+    },
+    async loadJobs (projectId) {
+      let jobs = []
+      try {
+        let {data} = await this.$axios.get(`https://gitlab.com/api/v4/projects/${projectId}/jobs`, {
+          headers: {
+            'Private-Token': this.personalToken
+          }
+        })
+        for (let i = 0; i < 3; i++) {
+          jobs.push(data[i])
+        }
+      } catch (err) {
+        console.log(err)
+      }
+      return jobs
     },
     async create_merge_request (id) {
       try {
-        let response = await this.$axios.post(`https://gitlab.com/api/v4/projects/${id}/merge_requests`, {
+        await this.$axios.post(`https://gitlab.com/api/v4/projects/${id}/merge_requests`, {
           source_branch: 'dev',
           target_branch: 'master',
           title: 'Deploy prod'
@@ -105,7 +134,6 @@ export default {
             'Private-Token': this.personalToken
           }
         })
-        console.log('response', response)
         this.$q.notify({
           message: 'Merge request criado',
           type: 'positive'
@@ -116,6 +144,11 @@ export default {
         })
       }
     }
+  },
+  beforeDestroy () {
+    clearInterval(this.projectsTimer)
   }
 }
 </script>
+<style scoped>
+</style>
