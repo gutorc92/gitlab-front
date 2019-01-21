@@ -6,11 +6,12 @@
       q-item-main
         q-field(label="Chave")
     q-item
+      q-item-side(icon="vpn_key")
       q-item-main
         q-input(v-model="tokenData" type='password' @change="val => tokenData = val")
     q-item
       q-item-main
-        q-btn(icon-right="send" label="Carregar grupos" @click='saveToken')
+        q-btn.full-width(flat icon-right="cached" @click='saveToken') Carregar grupos
 </template>
 
 <script>

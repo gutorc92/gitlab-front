@@ -1,23 +1,23 @@
 <template lang="pug">
-    .col-md-6.col-xs-12
-      .row
-        q-card(v-for='(project, key) in projectsData' :key="key")
-          q-card-title.bg-grey-6 {{project.name}}
-          q-card-separator
-          q-card-main.text-white.text-weight-light.no-padding(:class="cardColor2(project.updated)")
-            q-item(v-for="(branch, index) in project.branches" :key="index")
-              q-item-main
-                div {{branch.name}}
-          q-card-separator
-          q-card-main
-            q-list.no-padding.row(no-border)
-              q-item.no-padding(v-for="(job, index) in project.jobs" :key="index")
-                q-item-side(:icon="job.status === 'success' ? 'radio_button_checked' : 'error_outline'"
-                            :color="job.status === 'success' ? 'green': 'red'")
-                  q-tooltip| {{job.ref}}
-          q-card-separator
-          q-card-actions
-            q-btn(@click="create_merge_request(project.id)") Merge request
+.q-pa-md.row.full-width
+  .col-xl-3.col-md-4.col-xs-12.col-sm-6(v-for='(project, key) in projectsData' :key="key").q-pa-md
+    q-card
+      q-card-title.bg-faded.text-white {{project.name}}
+      q-card-separator.bg-grey
+      q-card-main.bg-white.text-white.text-weight-light.no-padding(:class="cardColor2(project.updated)")
+        q-item(v-for="(branch, index) in project.branches" :key="index")
+          q-item-main
+            div {{branch.name}}
+      q-card-separator.bg-grey
+      q-card-main.bg-white
+        q-list.no-padding.row(no-border)
+          q-item.no-padding(v-for="(job, index) in project.jobs" :key="index")
+            q-item-side(:icon="job.status === 'success' ? 'radio_button_checked' : 'error_outline'"
+                        :color="job.status === 'success' ? 'green': 'red'")
+              q-tooltip| {{job.ref}}
+      q-card-separator.bg-grey
+      q-card-actions.bg-white
+        q-btn.full-width(flat @click="create_merge_request(project.id)") Merge request
 </template>
 
 <style>
@@ -150,3 +150,5 @@ export default {
   }
 }
 </script>
+<style scoped>
+</style>
