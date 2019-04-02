@@ -12,7 +12,8 @@
       q-card-main.bg-white
         q-list.no-padding.row(no-border)
           q-item.no-padding(v-for="(job, index) in project.jobs" :key="index")
-            q-item-side(:icon="job.status === 'success' ? 'radio_button_checked' : 'error_outline'"
+            q-item-side(v-if="job && 'status' in job"
+                        :icon="job.status === 'success' ? 'radio_button_checked' : 'error_outline'"
                         :color="job.status === 'success' ? 'green': 'red'")
               q-tooltip| {{job.ref}}
       q-card-separator.bg-grey
