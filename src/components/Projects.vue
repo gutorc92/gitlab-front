@@ -47,7 +47,7 @@ export default {
     let scope = this
     this.projectsTimer = setInterval(function () {
       scope.loadProjectData()
-    }, 1 * 60 * 1000)
+    }, 2 * 60 * 1000)
   },
   watch: {
     projects: {

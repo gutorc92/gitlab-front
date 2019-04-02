@@ -6,6 +6,8 @@
           q-icon(name='menu')
         q-toolbar-title
           | Gitlab Dashboard
+        q-btn(flat='', dense='', round='', @click='leftDrawerOpen = !leftDrawerOpen', aria-label='Menu')
+          q-icon(name='settings')
     q-layout-drawer(v-model='leftDrawerOpen' side='left')
       token(v-model="tokenUser")
       groups(v-model='groupSelected')
