@@ -73,7 +73,8 @@ module.exports = function (ctx) {
         'QToggle',
         'QOptionGroup',
         'QTooltip',
-        'QScrollArea'
+        'QScrollArea',
+        'QPopover'
       ],
       directives: [
         'Ripple'

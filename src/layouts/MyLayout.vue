@@ -6,8 +6,8 @@
           q-icon(name='menu')
         q-toolbar-title
           | Gitlab Dashboard
-        q-btn(flat='', dense='', round='', @click='leftDrawerOpen = !leftDrawerOpen', aria-label='Menu')
-          q-icon(name='settings')
+        btn-popover(icon='settings')
+          settings(slot='body')
     q-layout-drawer(v-model='leftDrawerOpen' side='left')
       token(v-model="tokenUser")
       groups(v-model='groupSelected')
@@ -19,6 +19,8 @@
 <script>
 import { openURL } from 'quasar'
 import Token from '../components/Token'
+import BtnPopover from '../components/BtnPopover'
+import Settings from '../components/Settings'
 import Groups from '../components/Groups'
 import ProjectsSelector from '../components/ProjectsSelector'
 export default {
@@ -26,7 +28,9 @@ export default {
   components: {
     Token,
     Groups,
-    ProjectsSelector
+    ProjectsSelector,
+    BtnPopover,
+    Settings
   },
   data () {
     return {
