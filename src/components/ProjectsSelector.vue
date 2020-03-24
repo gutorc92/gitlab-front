@@ -48,14 +48,8 @@ export default {
         let token = this.search
         auxProjects = _.filter(auxProjects, function (item) { return fuzzysearch(token, item.name) })
       }
-      return _.map(auxProjects, function (p) { return {value: p.id, label: p.name} })
+      return _.map(auxProjects, function (p) { return { value: p.id, label: p.name } })
     }
-  },
-  created () {
-    if (this.group !== '') {
-      this.loadProjects(1)
-    }
-    this.projectsSelected = _.map(this.value, 'id')
   },
   watch: {
     group () {
@@ -67,6 +61,12 @@ export default {
       let response = _.filter(this.allProjects, project => _.includes(aux, project.id))
       this.$store.commit('projects/updateProjectsSelectedState', response)
     }
+  },
+  created () {
+    if (this.group !== '') {
+      this.loadProjects(1)
+    }
+    this.projectsSelected = _.map(this.value, 'id')
   },
   methods: {
     projectSelection (project) {

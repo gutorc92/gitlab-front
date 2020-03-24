@@ -41,14 +41,6 @@ export default {
       return this.$store.getters['projects/getProjectsSelected']
     }
   },
-  created () {
-  },
-  mounted () {
-    let scope = this
-    this.projectsTimer = setInterval(function () {
-      scope.loadProjectData()
-    }, 2 * 60 * 1000)
-  },
   watch: {
     projects: {
       handler () {
@@ -56,6 +48,17 @@ export default {
       },
       deep: true
     }
+  },
+  mounted () {
+    let scope = this
+    this.projectsTimer = setInterval(function () {
+      scope.loadProjectData()
+    }, 2 * 60 * 1000)
+  },
+  created () {
+  },
+  beforeDestroy () {
+    clearInterval(this.projectsTimer)
   },
   methods: {
     formatDate (val) {
@@ -89,7 +92,7 @@ export default {
       let projectsData = this.projectsData
       for (let project of this.projects) {
         try {
-          let {data} = await this.$axios.get(`https://gitlab.com/api/v4/projects/${project.id}/repository/compare?from=master&to=dev`, {
+          let { data } = await this.$axios.get(`https://gitlab.com/api/v4/projects/${project.id}/repository/compare?from=master&to=dev`, {
             headers: {
               'Private-Token': this.personalToken
             }
@@ -98,7 +101,7 @@ export default {
           projectsData.push({
             name: project.name,
             id: project.id,
-            branches: [{name: 'master'}, {name: 'dev'}],
+            branches: [{ name: 'master' }, { name: 'dev' }],
             updated: data.commit === null,
             jobs: jobs
           })
@@ -110,7 +113,7 @@ export default {
     async loadJobs (projectId) {
       let jobs = []
       try {
-        let {data} = await this.$axios.get(`https://gitlab.com/api/v4/projects/${projectId}/jobs`, {
+        let { data } = await this.$axios.get(`https://gitlab.com/api/v4/projects/${projectId}/jobs`, {
           headers: {
             'Private-Token': this.personalToken
           }
@@ -145,9 +148,6 @@ export default {
         })
       }
     }
-  },
-  beforeDestroy () {
-    clearInterval(this.projectsTimer)
   }
 }
 </script>

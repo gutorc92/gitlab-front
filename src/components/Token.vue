@@ -1,17 +1,19 @@
 <template lang="pug">
   div
     q-item
-      q-item-side(icon="help_outline" @click.native="openHelp")
+      q-item-section(avatar  @click.native="openHelp")
+        q-icon(name="help_outline")
         q-tooltip| Clique aqui para saber como criar um token.
-      q-item-main
-        q-field(label="Chave")
+      q-item-section
+        q-field(borderless label="Chave")
     q-item
-      q-item-side(icon="vpn_key")
-      q-item-main
+      q-item-section(avatar icon="vpn_key")
+        q-icon(name="vpn_key")
+      q-item-section
         q-input(v-model="tokenData" type='password' @change="val => tokenData = val")
     q-item
-      q-item-main
-        q-btn.full-width(flat icon-right="cached" @click='saveToken') Carregar grupos
+      q-item-section
+        q-btn.full-width(flat icon-right="cached" @click='saveToken' label="Salvar token")
 </template>
 
 <script>
@@ -40,13 +42,13 @@ export default {
       }
     }
   },
-  created () {
-    this.tokenData = this.value
-  },
   watch: {
     tokenData () {
       this.$emit('input', this.tokenData)
     }
+  },
+  created () {
+    this.tokenData = this.value
   },
   methods: {
     saveToken () {

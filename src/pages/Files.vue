@@ -3,6 +3,7 @@
     q-page.bg-dark
       q-scroll-area.projectsScroll
         .row.full-width
+          projects(:projects="projectsSelected")
 </template>
 
 <script>

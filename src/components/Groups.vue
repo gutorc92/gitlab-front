@@ -1,10 +1,10 @@
 <template lang="pug">
     div
       q-item
-        q-item-main
+        q-item-section
           q-field(label="Groupo")
       q-item
-        q-item-main
+        q-item-section
           q-select(v-if="groups.length > 0" v-model="groupSelected" :options="groups")
 </template>
 
@@ -26,12 +26,6 @@ export default {
       groupSelected: ''
     }
   },
-  created () {
-    this.groupSelected = this.value
-    if (this.personalToken !== '') {
-      this.loadGroups()
-    }
-  },
   computed: {
     personalToken () {
       return this.$store.getters['credentials/getPersonalToken']
@@ -42,6 +36,12 @@ export default {
       this.$emit('input', this.groupSelected)
     },
     personalToken () {
+      this.loadGroups()
+    }
+  },
+  created () {
+    this.groupSelected = this.value
+    if (this.personalToken !== '') {
       this.loadGroups()
     }
   },
@@ -58,7 +58,7 @@ export default {
           }
         }).then(function (response) {
         for (let group of response.data) {
-          groups.push({value: group.id.toString(), label: group.name})
+          groups.push({ value: group.id.toString(), label: group.name })
         }
       })
     }

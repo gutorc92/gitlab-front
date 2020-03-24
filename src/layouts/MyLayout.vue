@@ -1,17 +1,17 @@
 <template lang="pug">
   q-layout(view='hHh Lpr lFf')
-    q-layout-header
+    q-header
       q-toolbar(color='grey-10' :inverted="$q.theme === 'ios'")
         q-btn(flat='', dense='', round='', @click='leftDrawerOpen = !leftDrawerOpen', aria-label='Menu')
           q-icon(name='menu')
         q-toolbar-title
           | Gitlab Dashboard
-        btn-popover(icon='settings')
-          settings(slot='body')
-    q-layout-drawer(v-model='leftDrawerOpen' side='left')
+        q-menu
+          q-list
+            q-item
+              settings
+    q-drawer(v-model='leftDrawerOpen' side='left')
       token(v-model="tokenUser")
-      groups(v-model='groupSelected')
-      projects-selector(v-model="projectsSelected", :group="groupSelected")
     q-page-container
       router-view
 </template>
@@ -19,25 +19,18 @@
 <script>
 import { openURL } from 'quasar'
 import Token from '../components/Token'
-import BtnPopover from '../components/BtnPopover'
 import Settings from '../components/Settings'
-import Groups from '../components/Groups'
-import ProjectsSelector from '../components/ProjectsSelector'
+
 export default {
   name: 'MyLayout',
   components: {
     Token,
-    Groups,
-    ProjectsSelector,
-    BtnPopover,
     Settings
   },
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
-      groupSelected: '',
-      tokenUser: '',
-      projectsSelected: []
+      tokenUser: ''
     }
   },
   computed: {

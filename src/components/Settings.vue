@@ -1,11 +1,12 @@
 <template lang="pug">
   q-card
-    q-card-title Settings
-    q-card-separator
-    q-card-main.no-padding
+    q-card-section
+      div.text-h6 Settings
+    q-separator
+    q-card-section.no-padding
       q-scroll-area(style="width: 400px; max-width: 100%; height: 250px").q-px-md.bg-white
         q-item
-          q-item-main
+          q-item-section
             q-input(v-model="timeUpdate" type='number' @change="val => timeUpdate = val")
 </template>
 
@@ -27,13 +28,13 @@ export default {
       }
     }
   },
-  created () {
-    this.tokenData = this.value
-  },
   watch: {
     timeUpdate () {
       this.$emit('input', this.tokenData)
     }
+  },
+  created () {
+    this.tokenData = this.value
   },
   methods: {
     saveTimeUpdate () {
