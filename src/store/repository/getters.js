@@ -9,3 +9,10 @@ export const getRepos = (state) => {
   }
   return state.repos
 }
+
+export const getOrgs = (state) => {
+  if (state.orgs.length === 0 && LocalStorage.has('orgs')) {
+    return LocalStorage.getItem('orgs')
+  }
+  return state.orgs
+}

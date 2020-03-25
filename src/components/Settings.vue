@@ -1,13 +1,15 @@
 <template lang="pug">
-  q-card
-    q-card-section
-      div.text-h6 Settings
-    q-separator
-    q-card-section.no-padding
-      q-scroll-area(style="width: 400px; max-width: 100%; height: 250px").q-px-md.bg-white
-        q-item
-          q-item-section
-            q-input(v-model="timeUpdate" type='number' @change="val => timeUpdate = val")
+  q-scroll-area(style="width: 400px; max-width: 100%; height: 250px").q-px-md.bg-white
+    q-item
+      q-item-section
+        q-field(label="Tempo de atualização")
+          q-input(v-model="timeUpdate" type='number')
+    q-item
+      q-item-section
+        q-field(label="Commit Author")
+          q-input(v-model="commitAuthor")
+    q-item
+      q-btn(label="Salvar" @click="saveSettings")
 </template>
 
 <script>
@@ -15,31 +17,48 @@ export default {
   name: 'Settings',
   data () {
     return {
-      timeUpdate: ''
+      timeUpdate: '',
+      commitAuthor: ''
     }
   },
   computed: {
-    updateTime: {
+    savedTime: {
       get () {
-        return this.$store.state.credentials.personalToken
+        return this.$store.getters['settings/getUpdateTime']
       },
       set (val) {
-        this.$store.commit('credentials/updatePersonalTokenState', val)
+        this.$store.commit('settings/setUpdateTime', val)
+      }
+    },
+    savedAuthor: {
+      get () {
+        return this.$store.getters['settings/getCommitAuthor']
+      },
+      set (val) {
+        this.$store.commit('settings/setCommitAuthor', val)
       }
     }
   },
-  watch: {
-    timeUpdate () {
-      this.$emit('input', this.tokenData)
-    }
-  },
   created () {
-    this.tokenData = this.value
+    if (this.savedAuthor !== '') {
+      this.commitAuthor = this.savedAuthor
+    }
+    if (this.savedTime !== 0) {
+      this.updateTime = this.savedTime
+    }
   },
   methods: {
     saveTimeUpdate () {
       if (this.timeUpdate !== '') {
+        this.savedTime = this.timeUpdate
+      }
+    },
+    saveSettings () {
+      if (this.timeUpdate !== '') {
         this.updateTime = this.timeUpdate
+      }
+      if (this.commitAuthor !== '') {
+        this.savedAuthor = this.commitAuthor
       }
     }
   }

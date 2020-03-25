@@ -5,6 +5,7 @@ import example from './module-example'
 import credentials from './credentials'
 import repository from './repository'
 import projects from './projects'
+import settings from './settings'
 Vue.use(Vuex)
 
 /*
@@ -18,7 +19,8 @@ export default function (/* { ssrContext } */) {
       example,
       credentials,
       projects,
-      repository
+      repository,
+      settings
     }
   })
 
