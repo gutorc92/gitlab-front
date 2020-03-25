@@ -69,14 +69,22 @@ module.exports = function (ctx) {
         'QOptionGroup',
         'QTooltip',
         'QScrollArea',
-        'QMenu'
+        'QMenu',
+        'QDate',
+        'QPopupProxy',
+        'QBtnDropdown',
+        'QBtnGroup',
+        'QOptionGroup'
       ],
       directives: [
-        'Ripple'
+        'Ripple',
+        'ClosePopup'
       ],
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'LocalStorage',
+        'SessionStorage'
       ]
       // iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
       // i18n: 'de' // Quasar language

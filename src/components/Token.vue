@@ -9,8 +9,14 @@
     q-item
       q-item-section(avatar icon="vpn_key")
         q-icon(name="vpn_key")
-      q-item-section
-        q-input(v-model="tokenData" type='password' @change="val => tokenData = val")
+      q-item-section.q-gutter-y-md
+        q-input(v-model="tokenData" type='password')
+        q-option-group(
+          v-model="api"
+          :options="options"
+          color="primary"
+          inline
+          dense)
     q-item
       q-item-section
         q-btn.full-width(flat icon-right="cached" @click='saveToken' label="Salvar token")
@@ -24,22 +30,23 @@ export default {
     value: {
       type: String,
       defualt: '',
-      required: true
+      required: false
     }
   },
   data () {
     return {
+      api: 'gitlab',
+      options: [
+        {
+          label: 'Github',
+          value: 'github'
+        },
+        {
+          label: 'Gitlab',
+          value: 'gitlab'
+        }
+      ],
       tokenData: ''
-    }
-  },
-  computed: {
-    personalToken: {
-      get () {
-        return this.$store.state.credentials.personalToken
-      },
-      set (val) {
-        this.$store.commit('credentials/updatePersonalTokenState', val)
-      }
     }
   },
   watch: {
@@ -53,7 +60,16 @@ export default {
   methods: {
     saveToken () {
       if (this.tokenData !== '') {
-        this.personalToken = this.tokenData
+        this.$store.commit('credentials/setToken', {
+          token: this.tokenData,
+          api: this.api
+        })
+        this.tokenData = ''
+        this.$q.notify({
+          color: 'primary',
+          message: 'Token adicionado com sucesso',
+          position: 'left'
+        })
       }
     },
     openHelp () {

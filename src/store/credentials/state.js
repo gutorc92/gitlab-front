@@ -1,3 +1,4 @@
 export default {
-  personalToken: ''
+  personalToken: '',
+  tokens: []
 }

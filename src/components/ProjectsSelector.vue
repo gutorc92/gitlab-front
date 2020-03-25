@@ -1,8 +1,9 @@
 <template lang="pug">
   q-list.no-border.no-padding
     q-item.bg-grey-1
-      q-item-side(icon="search")
-      q-item-main.q-pb-md.text-white
+      q-item-section(avatar)
+        q-icon(name="search")
+      q-item-section.q-pb-md.text-white
         q-input(v-model="search" float-label="Filtrar Projeto" color="dark" hide-underline)
     q-item.no-padding
       q-scroll-area.projectsSelectorScroll

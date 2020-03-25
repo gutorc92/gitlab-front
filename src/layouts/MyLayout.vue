@@ -4,14 +4,15 @@
       q-toolbar(color='grey-10' :inverted="$q.theme === 'ios'")
         q-btn(flat='', dense='', round='', @click='leftDrawerOpen = !leftDrawerOpen', aria-label='Menu')
           q-icon(name='menu')
-        q-toolbar-title
-          | Gitlab Dashboard
-        q-menu
+        q-toolbar-title| Gitlab Dashboard
+        q-btn-dropdown(flat round dense icon="more_vert" label="Menu")
           q-list
             q-item
               settings
     q-drawer(v-model='leftDrawerOpen' side='left')
-      token(v-model="tokenUser")
+      token
+      q-btn(label="Deploy" to='/deploy')
+      q-btn(label="Files" to="/files")
     q-page-container
       router-view
 </template>
@@ -29,20 +30,7 @@ export default {
   },
   data () {
     return {
-      leftDrawerOpen: this.$q.platform.is.desktop,
-      tokenUser: ''
-    }
-  },
-  computed: {
-    personalToken: {
-      get () {
-        return this.$store.getters['credentials/getPersonalToken']
-      }
-    }
-  },
-  created () {
-    if (this.personalToken !== '') {
-      this.tokenUser = this.personalToken
+      leftDrawerOpen: this.$q.platform.is.desktop
     }
   },
   methods: {
