@@ -104,7 +104,9 @@ export default {
           console.log('result regex', result)
           if (result[2] === 'last') {
             let pageRe = /page=(\d)/
-            return pageRe.exec(result[1])[2]
+            let pageResult = pageRe.exec(result[1])
+            console.log('page Result', pageResult)
+            return pageResult[2]
           }
           return null
         })

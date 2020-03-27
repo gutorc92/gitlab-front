@@ -27,19 +27,25 @@
               color="primary"
             )
           q-btn(label="Carregar repositorios" @click="loadRepos")
-        q-card-section
+        q-card-section(v-if="reposOptions.length > 0")
           div Repositórios
+          q-option-group(
+            name="selectedRepos"
+            v-model="selectedRepos"
+            :options="reposOptions"
+            type="checkbox"
+            color="primary"
+            inline
+          )
+          q-btn(label="Carregar arquivos" @click="loadFiles")
+        q-card-section(v-if="commits.length > 0")
+          div Arquivos
           q-list
-            q-option-group(
-              name="selectedRepos"
-              v-model="selectedRepos"
-              :options="repos"
-              type="checkbox"
-              color="primary"
-              inline
-            )
-            q-item(v-for="rep in repos" :key="rep.id")
-              q-item-section {{rep.name}}
+            q-item(v-for="commit in commits" :key="commit.sha")
+              q-item-section
+                div(v-for="file in commit.files")
+                  span {{file.name}}
+                  span {{file.raw_url}}
 </template>
 
 <script>
@@ -55,7 +61,9 @@ export default {
       initialDate: '2020/02/01',
       finalDate: '2020/02/02',
       repos: [],
-      orgs: []
+      reposOptions: [],
+      orgs: [],
+      commits: []
     }
   },
   computed: {
@@ -67,6 +75,9 @@ export default {
     },
     savedOrgs () {
       return this.$store.getters['repository/getOrgs']
+    },
+    savedAuthor () {
+      return this.$store.getters['settings/getCommitAuthor']
     }
   },
   async created () {
@@ -117,14 +128,7 @@ export default {
           let result = await Promise.all(requests)
           console.log('result', result)
           for (let i = 0; i < result.length; i++) {
-            for (let j = 0; j < result[i].length; j++) {
-              if ('id' in result[i][j] && 'name' in result[i][j]) {
-                allRepos.push({
-                  value: result[i][j].id,
-                  label: result[i][j].name
-                })
-              }
-            }
+            allRepos = allRepos.concat(result[i])
           }
           // let repos = await this.loadGitHubRepos(data.token)
           // for (let i = 0; i < repos.length; i++) {
@@ -136,26 +140,61 @@ export default {
         }
         return allRepos
       }, [])
-      console.log('all reps', reps)
       this.$store.commit('repository/setRepos', reps)
+      let reposOptions = []
+      for (let j = 0; j < reps.length; j++) {
+        if ('id' in reps[j] && 'name' in reps[j]) {
+          reposOptions.push({
+            value: reps[j].id,
+            label: reps[j].name
+          })
+        }
+      }
+      this.reposOptions = reposOptions
       this.repos = reps
-      // try {
-      //   let { data } = await this.$axios.get(`https://gitlab.com/api/v4/projects/${project.id}/repository/compare?from=master&to=dev`, {
-      //     headers: {
-      //       'Private-Token': this.personalToken
-      //     }
-      //   })
-      //   let jobs = await this.loadJobs(project.id)
-      //   projectsData.push({
-      //     name: project.name,
-      //     id: project.id,
-      //     branches: [{ name: 'master' }, { name: 'dev' }],
-      //     updated: data.commit === null,
-      //     jobs: jobs
-      //   })
-      // } catch (err) {
-      //   console.log(err)
-      // }
+    },
+    async loadFiles () {
+      try {
+        let repos = this.repos
+        let commits = await this.tokens.reduce(async (allCommits, data) => {
+          let reqs = this.selectedRepos.map(async (repo) => {
+            console.log('repo', repo, repos)
+            let rep = repos.find(r => r.id === repo)
+            console.log('rep', rep)
+            let commits = await this.loadGitRepoCommits(data.token, {
+              owner: rep.owner.login,
+              repo: rep.name,
+              since: '2011-04-14T16:00:49Z',
+              until: '2020-04-14T16:00:49Z',
+              author: this.savedAuthor
+            })
+            return commits.map(commit => {
+              return this.loadCommitsFiles(data.token, {
+                owner: rep.owner.login,
+                repo: rep.name,
+                ref: commit.sha
+              })
+            })
+          })
+          console.log('reqs', reqs)
+          let result = await Promise.all(reqs)
+          console.log('result', result)
+          let commits = result.reduce((allCommits, data) => {
+            return allCommits.concat(data)
+          }, [])
+          return commits
+        }, [])
+        console.log('commit', commits)
+        commits = await Promise.all(commits)
+        console.log('commits', commits)
+        commits = commits.reduce((allCommits, data) => {
+          return allCommits.concat(data)
+        }, [])
+        console.log('commits', commits)
+        this.commits = commits
+      } catch (error) {
+        console.log('error', error)
+      }
     }
   }
 }
