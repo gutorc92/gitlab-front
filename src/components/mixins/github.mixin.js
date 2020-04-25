@@ -105,8 +105,8 @@ export default {
           if (result[2] === 'last') {
             let pageRe = /page=(\d)/
             let pageResult = pageRe.exec(result[1])
-            console.log('page Result', pageResult)
-            return pageResult[2]
+            console.log('page Result', pageResult[1])
+            return pageResult[1]
           }
           return null
         })
@@ -123,6 +123,7 @@ export default {
           )
         }
         try {
+          console.log('reqs', reqs)
           let result = await Promise.all(reqs)
           data = result.reduce((allData, response) => {
             return allData.concat(response.data)

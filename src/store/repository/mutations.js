@@ -11,3 +11,8 @@ export const setOrgs = (state, orgs) => {
   state.orgs = orgs
   LocalStorage.set('orgs', state.orgs)
 }
+
+export const setCommits = (state, commits) => {
+  state.commits = commits
+  LocalStorage.set('commits', state.commits)
+}

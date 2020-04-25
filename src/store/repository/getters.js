@@ -16,3 +16,10 @@ export const getOrgs = (state) => {
   }
   return state.orgs
 }
+
+export const getCommits = (state) => {
+  if (state.commits.length === 0 && LocalStorage.has('commits')) {
+    return LocalStorage.getItem('commits')
+  }
+  return state.commits
+}

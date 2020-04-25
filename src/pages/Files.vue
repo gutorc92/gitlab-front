@@ -4,18 +4,6 @@
       q-card.bg-white.col-10.q-gutter-y-lg
         q-card-section
           div.text-h6 Separação de arquivos
-        q-card-section
-          div
-            q-input(filled='' v-model='initialDate' mask='date' :rules="['date']")
-              template(v-slot:append='')
-                q-icon.cursor-pointer(name='event')
-                  q-popup-proxy(ref='qDateProxy' transition-show='scale' transition-hide='scale')
-                    q-date(v-model='initialDate' @input='() => $refs.qDateProxy.hide()')
-            q-input(filled='' v-model='finalDate' mask='date' :rules="['date']")
-              template(v-slot:append='')
-                q-icon.cursor-pointer(name='event')
-                  q-popup-proxy(ref='qDateProxy' transition-show='scale' transition-hide='scale')
-                    q-date(v-model='finalDate' @input='() => $refs.qDateProxy.hide()')
         q-separator
         q-card-section
           div Organizações
@@ -37,15 +25,28 @@
             color="primary"
             inline
           )
+          div
+            q-input(filled='' v-model='initialDate' mask='date' :rules="['date']")
+              template(v-slot:append='')
+                q-icon.cursor-pointer(name='event')
+                  q-popup-proxy(ref='qDateProxy' transition-show='scale' transition-hide='scale')
+                    q-date(v-model='initialDate'  mask="YYYY-MM-DD" @input='() => $refs.qDateProxy.hide()')
+            q-input(filled='' v-model='finalDate' mask='date' :rules="['date']")
+              template(v-slot:append='')
+                q-icon.cursor-pointer(name='event')
+                  q-popup-proxy(ref='qDateProxy' transition-show='scale' transition-hide='scale')
+                    q-date(v-model='finalDate' mask="YYYY-MM-DD" @input='() => $refs.qDateProxy.hide()')
           q-btn(label="Carregar arquivos" @click="loadFiles")
         q-card-section(v-if="commits.length > 0")
           div Arquivos
           q-list
             q-item(v-for="commit in commits" :key="commit.sha")
               q-item-section
+                div {{commit.commit.message}}
                 div(v-for="file in commit.files")
                   span {{file.name}}
                   span {{file.raw_url}}
+          q-btn(label="Organizar arquivos" @click="nextFiles")
 </template>
 
 <script>
@@ -100,6 +101,10 @@ export default {
     }
   },
   methods: {
+    nextFiles () {
+      this.$store.commit('repository/setCommits', this.commits)
+      this.$router.push('/of')
+    },
     async loadOrgs () {
       try {
         let orgs = await this.tokens.reduce(async (allOrgs, data) => {
@@ -120,6 +125,7 @@ export default {
       }
     },
     async loadRepos () {
+      this.commits = []
       console.log('all repos', this.tokens)
       let reps = await this.tokens.reduce(async (allRepos, data) => {
         console.log('all', allRepos, 'data', data)
@@ -164,8 +170,8 @@ export default {
             let commits = await this.loadGitRepoCommits(data.token, {
               owner: rep.owner.login,
               repo: rep.name,
-              since: '2011-04-14T16:00:49Z',
-              until: '2020-04-14T16:00:49Z',
+              since: `${this.initialDate}T00:00:00Z`,
+              until: `${this.finalDate}T00:00:00Z`,
               author: this.savedAuthor
             })
             return commits.map(commit => {
@@ -184,13 +190,10 @@ export default {
           }, [])
           return commits
         }, [])
-        console.log('commit', commits)
         commits = await Promise.all(commits)
-        console.log('commits', commits)
         commits = commits.reduce((allCommits, data) => {
-          return allCommits.concat(data)
+          return allCommits.concat(data.data)
         }, [])
-        console.log('commits', commits)
         this.commits = commits
       } catch (error) {
         console.log('error', error)
