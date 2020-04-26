@@ -56,6 +56,8 @@ module.exports = function (ctx) {
         'QBtn',
         'QIcon',
         'QList',
+        'QChip',
+        'QSplitter',
         'QItem',
         'QItemSection',
         'QCard',
@@ -74,7 +76,8 @@ module.exports = function (ctx) {
         'QPopupProxy',
         'QBtnDropdown',
         'QBtnGroup',
-        'QOptionGroup'
+        'QOptionGroup',
+        'QExpansionItem'
       ],
       directives: [
         'Ripple',

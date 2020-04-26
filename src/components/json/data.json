@@ -1,0 +1,242 @@
+[
+  {
+    "value": "5.10.7",
+    "activity": "Plataforma Distribuída",
+    "label": "5.10.7",
+    "desc": "Criação de arquivo chave/valor ou tipo xml",
+    "complexity": [
+      {
+        "value": 2,
+        "label": "Baixa - 2"
+      },
+      {
+        "value": 4,
+        "label": "Média - 4"
+      },
+      {
+        "value": 6,
+        "label": "Alta - 6"
+      }
+    ]
+  },
+  {
+    "value": "5.10.8",
+    "activity": "Plataforma Distribuída",
+    "label": "5.10.8",
+    "desc": "Alteração de arquivo chave/valor ou tipo xml",
+    "complexity": [
+      {
+        "value": 1,
+        "label": "Baixa - 1"
+      },
+      {
+        "value": 2,
+        "label": "Média - 2"
+      },
+      {
+        "value": 3,
+        "label": "Alta - 3"
+      }
+    ]
+  },
+  {
+    "value": "5.10.5",
+    "activity": "Plataforma Distribuída",
+    "label": "5.10.6",
+    "desc": "Criação JavaScript",
+    "complexity": [
+      {
+        "value": 4,
+        "label": "Baixa - 4"
+      },
+      {
+        "value": 8,
+        "label": "Média - 8"
+      },
+      {
+        "value": 12,
+        "label": "Alta - 12"
+      }
+    ]
+  },
+  {
+    "value": "5.10.6",
+    "activity": "Plataforma Distribuída",
+    "label": "5.10.6",
+    "desc": "Alteração JavaScript",
+    "complexity": [
+      {
+        "value": 2,
+        "label": "Baixa - 2"
+      },
+      {
+        "value": 4,
+        "label": "Média - 4"
+      },
+      {
+        "value": 6,
+        "label": "Alta - 6"
+      }
+    ]
+  },
+  {
+    "value": "5.15.7",
+    "activity": "Software de Infraestrutura",
+    "label": "5.15.7",
+    "desc": "Elaboração e criação de arquivo de definição \"Dockerfile\"",
+    "complexity": [
+      {
+        "value": 4,
+        "label": "Baixa - 4"
+      },
+      {
+        "value": 8,
+        "label": "Média - 8"
+      },
+      {
+        "value": 12,
+        "label": "Alta - 12"
+      }
+    ]
+  },
+  {
+    "value": "5.15.8",
+    "activity": "Software de Infraestrutura",
+    "label": "5.15.8",
+    "desc": "Alteração de arquivo de definição \"Dockerfile\"",
+    "complexity": [
+      {
+        "value": 2,
+        "label": "Baixa - 2"
+      },
+      {
+        "value": 4,
+        "label": "Média - 4"
+      },
+      {
+        "value": 6,
+        "label": "Alta - 6"
+      }
+    ]
+  },
+  {
+    "value": "5.15.9",
+    "activity": "Software de Infraestrutura",
+    "label": "5.15.9",
+    "desc": "Elaboração e criação de arquivo de definição \"Docker Compose\"",
+    "complexity": [
+      {
+        "value": 4,
+        "label": "Baixa - 4"
+      },
+      {
+        "value": 8,
+        "label": "Média - 8"
+      },
+      {
+        "value": 12,
+        "label": "Alta - 12"
+      }
+    ]
+  },
+  {
+    "value": "5.15.10",
+    "activity": "Software de Infraestrutura",
+    "label": "5.15.10",
+    "desc": "Alteração de arquivo de definição \"Docker Compose\"",
+    "complexity": [
+      {
+        "value": 2,
+        "label": "Baixa - 2"
+      },
+      {
+        "value": 4,
+        "label": "Média - 4"
+      },
+      {
+        "value": 6,
+        "label": "Alta - 6"
+      }
+    ]
+  },
+  {
+    "value": "5.15.10",
+    "activity": "Software de Infraestrutura",
+    "label": "5.15.10",
+    "desc": "Alteração de arquivo de definição \"Docker Compose\"",
+    "complexity": [
+      {
+        "value": 2,
+        "label": "Baixa - 2"
+      },
+      {
+        "value": 4,
+        "label": "Média - 4"
+      },
+      {
+        "value": 6,
+        "label": "Alta - 6"
+      }
+    ]
+  },
+  {
+    "value": "5.15.11",
+    "activity": "Software de Infraestrutura",
+    "label": "5.15.11",
+    "desc": "Definição e criação de arquivo de configuração para orquestrador de contêineres",
+    "complexity": [
+      {
+        "value": 4,
+        "label": "Baixa - 4"
+      },
+      {
+        "value": 8,
+        "label": "Média - 8"
+      },
+      {
+        "value": 12,
+        "label": "Alta - 12"
+      }
+    ]
+  },
+  {
+    "value": "5.15.12",
+    "activity": "Software de Infraestrutura",
+    "label": "5.15.12",
+    "desc": "Alteração de arquivo de configuração para orquestrador de contêineres;",
+    "complexity": [
+      {
+        "value": 2,
+        "label": "Baixa - 2"
+      },
+      {
+        "value": 4,
+        "label": "Média - 4"
+      },
+      {
+        "value": 6,
+        "label": "Alta - 6"
+      }
+    ]
+  },
+  {
+    "value": "5.15.13",
+    "activity": "Software de Infraestrutura",
+    "label": "5.15.13",
+    "desc": "Definição e criação de objetos de integração e negócio Node.js/GoLang/Kotlin;",
+    "complexity": [
+      {
+        "value": 4,
+        "label": "Baixa - 4"
+      },
+      {
+        "value": 8,
+        "label": "Média - 8"
+      },
+      {
+        "value": 12,
+        "label": "Alta - 12"
+      }
+    ]
+  }
+]

@@ -1,27 +1,29 @@
 <template lang="pug">
-    div.fields.q-pa-sm
-      div
-        q-select.q-ma-sm(v-model="completeDesc.task" :options="options" label="Tarefa")
-        div.q-ma-sm(v-if='completeDesc.task') {{completeDesc.task.desc}}
-        q-select.q-ma-sm(v-model="completeDesc.complexity" :options="complexityOptions" label="Complexidade")
-        q-field.q-ma-sm(rounded standout disable)
-          template(v-slot:control)
-            div(class="self-center no-outline" tabindex="0") Quatidade: {{completeDesc.files.length}}
-        q-field.q-ma-sm(rounded standout disable)
-          template(v-slot:control)
-            div(class="self-center no-outline" tabindex="0") Total USTIBB: {{total}}
-      div.box(
-        :style="minHeight"
-        v-mutation="handler"
-        @dragenter="onDragEnter"
-        @dragleave="onDragLeave"
-        @dragover="onDragOver"
-        @drop="onDrop"
-      )
+    q-expansion-item(:label="expansionLabel")
+      div.fields.q-pa-sm
+        div
+          div.row
+            q-select.col-5.q-ma-sm(v-model="completeDesc.task" :options="options" :option-label="opt => opt ? `${opt.value} ${opt.desc}` : ''" label="Tarefa")
+            //- div.q-ma-sm(v-if='completeDesc.task') {{completeDesc.task.desc}}
+            q-select.col-5.q-ma-sm(v-model="completeDesc.complexity" :options="completeDesc.task ? completeDesc.task.complexity : []" label="Complexidade")
+          div.row
+            q-field.col-5.q-ma-sm(rounded standout disable)
+              template(v-slot:control)
+                div(class="self-center no-outline" tabindex="0") Quatidade: {{completeDesc.files.length}}
+            q-field.col-5.q-ma-sm(rounded standout disable)
+              template(v-slot:control)
+                div(class="self-center no-outline" tabindex="0") Total USTIBB: {{total}}
+        div.box(
+          :style="minHeight"
+          v-mutation="handler"
+          @dragenter="onDragEnter"
+          @dragleave="onDragLeave"
+          @dragover="onDragOver"
+          @drop="onDrop"
+        )
 </template>
 <style scoped>
 .fields {
-  max-width: 60%;
   padding: 5px;
   margin: 3px 0 3px 0;
   border: 1px solid #ccc!important;
@@ -37,6 +39,7 @@
 </style>
 
 <script>
+import optionsData from './json/data.json' // eslint-disable-line
 export default {
   name: 'HeaderOF',
   props: {
@@ -57,13 +60,7 @@ export default {
       total: 0,
       status: [],
       task: '',
-      options: [
-        {
-          value: '5.10.7',
-          label: '5.10.7',
-          desc: 'Criação de arquivo chave/valor ou tipo xml'
-        }
-      ],
+      options: optionsData,
       complexity: '',
       complexityOptions: [
         {
@@ -74,8 +71,15 @@ export default {
     }
   },
   computed: {
+    expansionLabel () {
+      let text = 'Tarefa'
+      if (typeof (this.completeDesc.task) !== 'string' && 'desc' in this.completeDesc.task) {
+        text += ` ${this.completeDesc.task.desc}`
+      }
+      return text
+    },
     minHeight () {
-      let pxs = this.completeDesc.files.length > 1 ? this.completeDesc.files.length * 40 + 20 : 60
+      let pxs = this.completeDesc.files.length > 1 ? this.completeDesc.files.length * 60 + 20 : 80
       return `min-height: ${pxs}px!important;`
     }
   },
@@ -91,12 +95,8 @@ export default {
     handlerCompleteDesc () {
       let multi = this.completeDesc.complexity === '' ? 0 : 'value' in this.completeDesc.complexity ? this.completeDesc.complexity.value : 0
       let total = this.completeDesc.files.length * multi
-      if (total > this.total) {
-        this.$emit('updatetotal', { 'op': 'add', 'total': total })
-      } else if (total < this.total) {
-        this.$emit('updatetotal', { 'op': 'del', 'total': total })
-      }
       this.total = total
+      this.$emit('updatetotal')
     },
     handler (mutationRecords) {
       this.status = []
@@ -106,7 +106,11 @@ export default {
         console.log('record 1', record)
         const info = record.target.innerText
         console.log('info 1', info.replace(/↵|\n/ig, ' ').split(' '))
-        info.replace(/↵|\n/ig, ' ').split(' ').map(text => uniqueStatus.add(text))
+        info.replace(/↵|\n/ig, ' ').split(' ').map((text) => {
+          if (text !== 'modified' && text !== 'added' && text !== 'removed') {
+            uniqueStatus.add(text)
+          }
+        })
       }
       console.log('uniqueStatus', uniqueStatus)
       this.completeDesc.files = [...uniqueStatus]
