@@ -11,8 +11,9 @@
               settings
     q-drawer(v-model='leftDrawerOpen' side='left')
       token
-      q-btn(label="Deploy" to='/deploy')
-      q-btn(label="Files" to="/files")
+      div.row
+        q-btn.col-5.q-ma-sm(label="Deploy" to='/deploy')
+        q-btn.col-5.q-ma-sm(label="Files" to="/files")
     q-page-container
       router-view
 </template>

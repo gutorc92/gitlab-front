@@ -19,6 +19,10 @@
           dense)
     q-item
       q-item-section
+        q-field(label="Commit Author")
+          q-input(v-model="commitAuthor")
+    q-item
+      q-item-section
         q-btn.full-width(flat icon-right="cached" @click='saveToken' label="Salvar token")
 </template>
 
@@ -36,6 +40,7 @@ export default {
   data () {
     return {
       api: 'gitlab',
+      commitAuthor: '',
       options: [
         {
           label: 'Github',
@@ -62,9 +67,11 @@ export default {
       if (this.tokenData !== '') {
         this.$store.commit('credentials/setToken', {
           token: this.tokenData,
-          api: this.api
+          api: this.api,
+          author: this.commitAuthor
         })
         this.tokenData = ''
+        this.commitAuthor = ''
         this.$q.notify({
           color: 'primary',
           message: 'Token adicionado com sucesso',

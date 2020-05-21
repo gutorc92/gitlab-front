@@ -9,10 +9,11 @@ export const updatePersonalTokenState = (state, token) => {
   window.localStorage.setItem('personalToken', token)
 }
 
-export const setToken = (state, { token = '', api = 'gitlab' }) => {
+export const setToken = (state, { token = '', api = 'gitlab', author = '' }) => {
   state.tokens.push({
     token,
-    api
+    api,
+    author
   })
   LocalStorage.set('tokens', state.tokens)
 }

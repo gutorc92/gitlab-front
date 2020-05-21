@@ -3,9 +3,9 @@
     q-page.bg-grey-6.fit.row.wrap.justify-center.items-start.content-start
       q-card.bg-white.col-10.q-gutter-y-lg
         q-card-section
-          div.text-h6 Separação de arquivos
+          div.text-h6 Selecionar commits
         q-separator
-        q-card-section
+        q-card-section(v-if="tokens.length > 0")
           div Organizações
           q-option-group(
               name="selectedOrgs"
@@ -15,6 +15,8 @@
               color="primary"
             )
           q-btn(label="Carregar repositorios" @click="loadRepos")
+        q-card-section(v-else)
+          div Você precisa adicionar o token de alguma plataforma
         q-card-section(v-if="reposOptions.length > 0")
           div Repositórios
           q-option-group(
@@ -172,7 +174,7 @@ export default {
               repo: rep.name,
               since: `${this.initialDate}T00:00:00Z`,
               until: `${this.finalDate}T00:00:00Z`,
-              author: this.savedAuthor
+              author: data.author
             })
             return commits.map(commit => {
               return this.loadCommitsFiles(data.token, {
