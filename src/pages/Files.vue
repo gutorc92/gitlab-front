@@ -53,9 +53,10 @@
 
 <script>
 import github from 'src/components/mixins/github.mixin'
+import gitlab from 'src/components/mixins/gitlab.mixin'
 export default {
   name: 'Files',
-  mixins: [github],
+  mixins: [github, gitlab],
   data () {
     return {
       loading: false,
@@ -110,13 +111,24 @@ export default {
     async loadOrgs () {
       try {
         let orgs = await this.tokens.reduce(async (allOrgs, data) => {
-          let orgs = await this.loadGitHubOrg(data.token)
-          orgs.map(org => {
-            allOrgs.push({
-              value: org.login,
-              label: org.description ? org.description : org.login
+          if (data.api === 'github') {
+            let orgs = await this.loadGitHubOrg(data.token)
+            orgs.map(org => {
+              allOrgs.push({
+                value: org.login,
+                label: org.description ? org.description : org.login
+              })
             })
-          })
+          } else if (data.api === 'gitlab') {
+            console.log('procurando organizacoes', data)
+            let orgs = await this.loadGitlabOrg(data.token)
+            orgs.map(org => {
+              allOrgs.push({
+                value: org.login,
+                label: org.description ? org.description : org.login
+              })
+            })
+          }
           return allOrgs
         }, [])
         this.$store.commit('repository/setOrgs', orgs)
