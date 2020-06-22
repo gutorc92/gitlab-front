@@ -14,6 +14,7 @@ export const getPersonalToken = (state) => {
 }
 
 export const getTokens = (state) => {
+  console.log('getters tokens', state.tokens)
   if (state.tokens.length === 0 && LocalStorage.has('tokens')) {
     return LocalStorage.getItem('tokens')
   }

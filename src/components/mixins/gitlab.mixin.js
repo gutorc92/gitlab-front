@@ -1,7 +1,7 @@
 export default {
   data () {
     return {
-      apiGitlab: 'https://fontes.intranet.bb.com.br/api/v4'
+      apiGitlab: 'https://gitlab.com/api/v4'
     }
   },
   methods: {
@@ -32,17 +32,17 @@ export default {
     },
     async loadGitlabOrgRepos (token, orgID) {
       try {
-        let url = `${this.apiGitlab}/orgs/${orgID}/repos`
-        let response = await this.$axios.get(url, {
+        let url = `${this.apiGitlab}/groups/${orgID}/projects`
+        return await this.$axios.get(url, {
           headers: {
-            'Authorization': `token ${token}`
+            'PRIVATE-TOKEN': `${token}`
           }
         })
-        console.log('response', response)
-        let pagination = await this.pagination(response, url, token)
-        let data = response.data.concat(pagination)
-        console.log('data', data)
-        return data
+        // console.log('response repos', response)
+        // let pagination = await this.pagination(response, url, token)
+        // let data = response.data.concat(pagination)
+        // console.log('data', data)
+        // return data
       } catch (error) {
         console.log('error', error)
         return []
@@ -50,16 +50,14 @@ export default {
     },
     async loadGitlabOrg (token) {
       try {
-        let { data } = await this.$axios.get(`${this.apiGitlab}/groups`, {
+        return this.$axios.get(`${this.apiGitlab}/groups?per_page=30`, {
           headers: {
-            'Authorization': `token ${token}`
+            'PRIVATE-TOKEN': `${token}`
           }
         })
-        console.log('data', data)
-        return data
       } catch (error) {
         console.log('error', error)
-        return []
+        return new Promise()
       }
     },
     async loadGitRepoCommits (token, { owner, repo, since, until, author }) {

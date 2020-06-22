@@ -50,13 +50,11 @@ export default {
     },
     async loadGitHubOrg (token) {
       try {
-        let { data } = await this.$axios.get(`${this.apiGithub}/user/orgs`, {
+        return this.$axios.get(`${this.apiGithub}/user/orgs`, {
           headers: {
             'Authorization': `token ${token}`
           }
         })
-        console.log('data', data)
-        return data
       } catch (error) {
         console.log('error', error)
         return []

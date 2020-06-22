@@ -11,6 +11,7 @@
               name="selectedOrgs"
               v-model="selectedOrgs"
               :options="orgs"
+              inline
               type="checkbox"
               color="primary"
             )
@@ -110,53 +111,60 @@ export default {
     },
     async loadOrgs () {
       try {
-        let orgs = await this.tokens.reduce(async (allOrgs, data) => {
-          if (data.api === 'github') {
-            let orgs = await this.loadGitHubOrg(data.token)
-            orgs.map(org => {
+        let results = []
+        for (let i = 0; i < this.tokens.length; i++) {
+          if (this.tokens[i].api === 'github') {
+            results.push(this.loadGitHubOrg(this.tokens[i].token))
+          } else if (this.tokens[i].api === 'gitlab') {
+            results.push(this.loadGitlabOrg(this.tokens[i].token))
+          }
+        }
+        console.log('results', results)
+        let response = await Promise.all(results)
+        let allOrgs = []
+        for (let i = 0; i < this.tokens.length; i++) {
+          if (this.tokens[i].api === 'github') {
+            response[i].data.map(org => {
               allOrgs.push({
                 value: org.login,
-                label: org.description ? org.description : org.login
+                label: org.login,
+                api: this.tokens[i].api
               })
             })
-          } else if (data.api === 'gitlab') {
-            console.log('procurando organizacoes', data)
-            let orgs = await this.loadGitlabOrg(data.token)
-            orgs.map(org => {
+          } else if (this.tokens[i].api === 'gitlab') {
+            response[i].data.map(org => {
               allOrgs.push({
-                value: org.login,
-                label: org.description ? org.description : org.login
+                value: org.id,
+                label: org.name,
+                api: this.tokens[i].api
               })
             })
           }
-          return allOrgs
-        }, [])
-        this.$store.commit('repository/setOrgs', orgs)
-        console.log('orgs', orgs)
-        this.orgs = orgs
+        }
+        this.$store.commit('repository/setOrgs', allOrgs)
+        console.log('all orgs', allOrgs)
+        this.orgs = allOrgs
       } catch (err) {
-        console.log('error')
+        console.log('error orgs', err)
       }
     },
     async loadRepos () {
       this.commits = []
-      console.log('all repos', this.tokens)
+      console.log('tokens', this.tokens)
       let reps = await this.tokens.reduce(async (allRepos, data) => {
         console.log('all', allRepos, 'data', data)
-        if (data.api === 'github') {
-          let requests = this.selectedOrgs.map(org => this.loadGitHubOrgRepos(data.token, org))
-          let result = await Promise.all(requests)
-          console.log('result', result)
-          for (let i = 0; i < result.length; i++) {
-            allRepos = allRepos.concat(result[i])
+        let requests = []
+        this.selectedRepos.map(async (org) => {
+          if (org.api === 'github') {
+            requests.push(this.loadGitHubOrgRepos(data.token, org))
+          } else if (data.api === 'gitlab') {
+            requests.push(this.loadGitHubOrgRepos(data.token, org))
           }
-          // let repos = await this.loadGitHubRepos(data.token)
-          // for (let i = 0; i < repos.length; i++) {
-          //   allRepos.push({
-          //     value: repos[i].id,
-          //     label: repos[i].name
-          //   })
-          // }
+        })
+        let result = await Promise.all(requests)
+        console.log('result repositories', result)
+        for (let i = 0; i < result.length; i++) {
+          allRepos = allRepos.concat(result[i].data)
         }
         return allRepos
       }, [])

@@ -10,10 +10,20 @@ export const updatePersonalTokenState = (state, token) => {
 }
 
 export const setToken = (state, { token = '', api = 'gitlab', author = '' }) => {
+  console.log('set token', token, 'api', api, 'author', author)
+  console.log('set tokens', state.tokens)
   state.tokens.push({
-    token,
-    api,
-    author
+    token: token,
+    api: api,
+    author: author
   })
-  LocalStorage.set('tokens', state.tokens)
+  console.log('state', state)
+  LocalStorage.set('tokens1', state.tokens)
+  if (LocalStorage.has('tokens')) {
+    let actualtokens = LocalStorage.getItem('tokens')
+    actualtokens.push({ token: token, api: api, author: author })
+    LocalStorage.set('tokens', actualtokens)
+  } else {
+    LocalStorage.set('tokens', state.tokens)
+  }
 }

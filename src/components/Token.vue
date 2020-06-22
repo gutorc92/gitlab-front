@@ -30,13 +30,6 @@
 import { openURL } from 'quasar'
 export default {
   name: 'Token',
-  props: {
-    value: {
-      type: String,
-      defualt: '',
-      required: false
-    }
-  },
   data () {
     return {
       api: 'gitlab',
@@ -53,14 +46,6 @@ export default {
       ],
       tokenData: ''
     }
-  },
-  watch: {
-    tokenData () {
-      this.$emit('input', this.tokenData)
-    }
-  },
-  created () {
-    this.tokenData = this.value
   },
   methods: {
     saveToken () {
